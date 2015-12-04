@@ -1,0 +1,8 @@
+---
+:enabled: true
+
+# collectd socket
+#:socket: /var/run/collectd-unixsock
+
+# probe timeout (in seconds)
+#:timeout: 5

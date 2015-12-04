@@ -1,0 +1,4 @@
+.idea
+smart_proxy_colly*gem
+logs
+Gemfile.lock
