@@ -4,31 +4,32 @@ module Proxy::Colly
   class Writer
     include ::Proxy::Log
 
-    def initialize(socket_name, hostname, interval)
+    def initialize(socket_name, hostname, interval, debug)
       @socket_name = socket_name
       @hostname = hostname
       @interval = interval
+      @debug = debug
     end
 
     def send_value id, value_list
-      Uxsock::CollectdUnixSock.open(@socket_name) do |socket|
-        logger.debug "VAL: #{id}: #{value_list.inspect}"
+      Uxsock::CollectdUnixSock.open(@socket_name, @debug) do |socket|
+        #logger.debug "VAL: #{id}: #{value_list.inspect}"
         socket.putval "#{@hostname}/#{id}", value_list, @interval
       end
     end
 
     def send_values array_id_valuelist
-      Uxsock::CollectdUnixSock.open(@socket_name) do |socket|
+      Uxsock::CollectdUnixSock.open(@socket_name, @debug) do |socket|
         array_id_valuelist.each do |id_val|
-          logger.debug "VAL: #{id_val[0]}: #{id_val[1].inspect}"
+          #logger.debug "VAL: #{id_val[0]}: #{id_val[1].inspect}"
           socket.putval "#{@hostname}/#{id_val[0]}", id_val[1], @interval
         end
       end
     end
 
     def notify message, time = Time.now.utc, severity = :okay, options = {}
-      Uxsock::CollectdUnixSock.open(@socket_name) do |socket|
-        logger.debug "NTF: #{message}"
+      Uxsock::CollectdUnixSock.open(@socket_name, @debug) do |socket|
+        #logger.debug "NTF: #{message}"
         socket.putnotif message, time, severity, @hostname, options
       end
     end

@@ -22,13 +22,15 @@ module Proxy::Colly
                 requests_total += 1
                 success_total += 1 if ret[0] == 200
               end
+              # TODO implement new type "present"
+              plugin_values = ::Proxy::Plugins.enabled_plugins.map { |p| ["foreman-proxy-plugin-#{p.plugin_name}/absolute", 1] }
               writer.send_values([
                 ["webrick-request-processed/count", requests_total],
                 ["webrick-request-success/count", success_total],
                 ["webrick-request-failure/count", requests_total - success_total],
-                ["webrick-request-time-spent-total/counter", time_spent_total],
+                ["webrick-request-time-spent-total/duration", time_spent_total],
                 ["webrick-request-time-avg/duration", time_spent_total / requests_total],
-              ])
+              ] + plugin_values)
               rescue Exception => e
                 logger.error "Error processing statistics: #{e}"
                 logger.debug("#{e}:#{e.backtrace.join("\n")}")

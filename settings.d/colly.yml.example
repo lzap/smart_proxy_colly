@@ -4,5 +4,8 @@
 # collectd socket
 #:socket: /var/run/collectd-unixsock
 
+# send complete socket communication into debug logger
+#:debug_socket: true
+
 # probe timeout (in seconds)
 #:timeout: 5
